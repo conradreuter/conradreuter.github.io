@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+main {
+  height: 100%;
+}
+
+body {
+  font-size: 32px;
+  font-family: sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  animation: rotate 6s linear infinite;
+  background: conic-gradient(
+      red 0deg 60deg,
+      blue 60deg 120deg,
+      red 120deg 180deg,
+      blue 180deg 240deg,
+      red 240deg 300deg,
+      blue 300deg 360deg
+    )
+    center center;
+  bottom: -100%;
+  content: '';
+  display: block;
+  left: -100%;
+  position: absolute;
+  right: -100%;
+  top: -100%;
+}
+
+main {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+
+h1 {
+  color: white;
+  font-size: 8rem;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px black;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 2px 2px black;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

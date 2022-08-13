@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+main {
+  height: 100%;
+}
+
+main {
+  align-items: center;
+  background: rgb(18, 32, 24);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+svg {
+  aspect-ratio: 1;
+  border: 1px solid white; /*TODO:remove*/
+  max-height: 100%;
+  max-width: 100%;
+}
+
+svg > .ant {
+  fill: none;
+  stroke: white;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
