@@ -10,40 +10,17 @@ let gameloop
 let metrics
 
 const ants = []
-const antCount = 1e4
-const speed = 3
+const antCount = 3e3
+const fadeAlpha = 0.02
+const speed = 2.5
 const jitter = 5e-1
 
 window.addEventListener('load', () => {
   init()
   spawnAnts(antCount)
   render()
-  //gameloop.start()
-
-  window.printMetrics = () => {
-    const out = []
-    for (const [key, metric] of Object.entries(metrics)) {
-      out.push(`${key} ${metric.fmt(metric.m.read())}`)
-    }
-    return out.join('  ')
-  }
-
-  window.run = (ms = 1e2) => {
-    gameloop.start()
-    setTimeout(() => {
-      gameloop.stop()
-      console.log('done')
-    }, ms)
-  }
-  window.run()
-})
-
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    //gameloop.start()
-  } else {
-    //gameloop.stop()
-  }
+  gameloop.listenToDocumentVisibility()
+  gameloop.start()
 })
 
 function init() {
@@ -55,6 +32,7 @@ function init() {
     render: { m: new Metric(), fmt: (x) => `${x.toFixed(1)}ms` },
     simulate: { m: new Metric(), fmt: (x) => `${x.toFixed(1)}ms` },
   }
+  window.printMetrics = printMetrics
 
   gameloop = new Gameloop({ render, simulate })
 }
@@ -91,18 +69,18 @@ function simulate(timePerFrame) {
 
 function render() {
   const [timing] = measureTiming(() => {
-    clearScreen()
-    renderAnts()
+    fadeTrails()
+    drawAnts()
   })
   metrics.render.m.emit(timing)
 }
 
-function clearScreen() {
-  ctx.fillStyle = 'rgb(18, 32, 24)'
+function fadeTrails() {
+  ctx.fillStyle = `rgba(18, 32, 24, ${fadeAlpha})`
   ctx.fillRect(0, 0, width, height)
 }
 
-function renderAnts() {
+function drawAnts() {
   ctx.fillStyle = 'white'
   for (const ant of ants) {
     ctx.fillRect(ant.x, ant.y, 1, 1)
@@ -125,4 +103,12 @@ function adjustToCanvasSize() {
     requestAnimationFrame(() => render())
   })
   resizeObserver.observe(canvas)
+}
+
+function printMetrics() {
+  const out = []
+  for (const [key, metric] of Object.entries(metrics)) {
+    out.push(`${key} ${metric.fmt(metric.m.read())}`)
+  }
+  return out.join('  ')
 }

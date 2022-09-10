@@ -48,6 +48,18 @@ export class Gameloop {
   stop() {
     this.#isStopped = true
   }
+
+  listenToDocumentVisibility() {
+    const listener = () => {
+      if (document.visibilityState === 'visible') {
+        gameloop.start()
+      } else {
+        gameloop.stop()
+      }
+    }
+    document.addEventListener('visibilitychange', listener)
+    return () => document.removeEventListener('visibilitychange', listener)
+  }
 }
 
 const defaultMaxFPS = 60
