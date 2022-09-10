@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  color: inherit;
   margin: 0;
   padding: 0;
 }
@@ -30,7 +31,6 @@ body::before {
     center center;
   bottom: -100%;
   content: '';
-  display: block;
   left: -100%;
   position: absolute;
   right: -100%;
@@ -39,36 +39,60 @@ body::before {
 
 main {
   align-items: center;
+  color: white;
   display: flex;
   flex-direction: column;
-  gap: 1em;
   justify-content: center;
   height: 100%;
+  padding: 1rem;
   position: relative;
+  text-shadow: -0.05em -0.05em 0.05em black, +0.05em -0.05em 0.05em black,
+    -0.05em +0.05em 0.05em black, +0.05em +0.05em 0.05em black;
 }
 
 h1 {
-  color: white;
-  font-size: 8rem;
+  font-size: 12rem;
+  font-weight: bold;
+  margin-block-end: 3rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 4rem;
   font-weight: bold;
   text-align: center;
-  text-shadow: 2px 2px black;
 }
 
-a {
-  color: white;
+nav {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+nav a {
+  position: relative;
   text-decoration: none;
-  text-shadow: 2px 2px black;
 }
 
-a:hover {
+nav a:hover {
   text-decoration: underline;
+}
+
+nav a:not(:last-of-type)::after {
+  content: '·';
+  pointer-events: none;
+  position: absolute;
+  left: 100%;
+  text-align: center;
+  text-decoration: none;
+  width: 2rem;
 }
 
 @keyframes rotate {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
