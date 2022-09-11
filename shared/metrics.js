@@ -18,6 +18,9 @@ export class Metric {
     }
     this.#values[this.#insertIdx] = value
     this.#insertIdx++
+    if (this.#insertIdx === this.#values.length) {
+      this.#insertIdx = 0
+    }
   }
 
   read() {

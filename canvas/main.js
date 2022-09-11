@@ -1,6 +1,6 @@
-import { measureTiming } from './utils/async.js'
-import { Gameloop } from './utils/gameloop.js'
-import { Metric } from './utils/metrics.js'
+import { measureTiming } from '/shared/async.js'
+import { Gameloop } from '/shared/gameloop.js'
+import { Metric } from '/shared/metrics.js'
 
 let canvas
 let ctx
