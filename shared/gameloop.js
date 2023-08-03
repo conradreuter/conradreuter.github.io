@@ -1,8 +1,10 @@
 export class Gameloop {
+  #clock = 0
+  #fixedFrameTime
   #isStopped = true
+  #pendingAnimationFrameID
   #render
   #simulate
-  #timePerFrame
 
   constructor(params) {
     this.#render = params.render
@@ -11,18 +13,36 @@ export class Gameloop {
   }
 
   setMaxFPS(fps) {
-    this.#timePerFrame = 1e3 / fps
+    this.#fixedFrameTime = 1e3 / fps
+  }
+
+  get clock() {
+    return this.#clock
+  }
+
+  get isRunning() {
+    return !this.#isStopped
   }
 
   start() {
-    if (!this.#isStopped) {
-      return
+    if (this.#isStopped) {
+      this.#isStopped = false
+      this.#run()
     }
-    this.#isStopped = false
+  }
 
+  stop() {
+    this.#isStopped = true
+    if (this.#pendingAnimationFrameID != null) {
+      cancelAnimationFrame(this.#pendingAnimationFrameID)
+      this.#pendingAnimationFrameID = null
+    }
+  }
+
+  #run() {
     let lastFrame = performance.now()
     let accumulatedTime = 0
-    requestAnimationFrame((frame) => {
+    this.#pendingAnimationFrameID = requestAnimationFrame((frame) => {
       step(performance.now())
       lastFrame = frame
     })
@@ -32,29 +52,33 @@ export class Gameloop {
       }
       const frameTime = currentFrame - lastFrame
       accumulatedTime += frameTime
-      const stepsToSimulate = Math.floor(accumulatedTime / this.#timePerFrame)
+      const stepsToSimulate = Math.floor(accumulatedTime / this.#fixedFrameTime)
       for (let i = 0; i < stepsToSimulate; i++) {
-        this.#simulate(this.#timePerFrame)
+        this.#simulate(this.#fixedFrameTime)
+        this.#clock += this.#fixedFrameTime
       }
       if (stepsToSimulate > 0) {
         this.#render()
       }
       lastFrame = currentFrame
-      accumulatedTime -= stepsToSimulate * this.#timePerFrame
-      requestAnimationFrame(step)
+      accumulatedTime -= stepsToSimulate * this.#fixedFrameTime
+      this.#pendingAnimationFrameID = requestAnimationFrame(step)
     }
   }
 
-  stop() {
-    this.#isStopped = true
-  }
-
   listenToDocumentVisibility() {
+    let wasStoppedByDocumentVisibility = false
     const listener = () => {
       if (document.visibilityState === 'visible') {
-        gameloop.start()
+        if (wasStoppedByDocumentVisibility) {
+          this.start()
+          wasStoppedByDocumentVisibility = false
+        }
       } else {
-        gameloop.stop()
+        if (this.isRunning) {
+          this.stop()
+          wasStoppedByDocumentVisibility = true
+        }
       }
     }
     document.addEventListener('visibilitychange', listener)

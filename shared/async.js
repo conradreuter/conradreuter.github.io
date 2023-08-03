@@ -10,7 +10,7 @@ export function measureTiming(fn) {
   function withTiming(syncResult) {
     const end = now()
     const diff = end - start
-    return [diff, result]
+    return [diff, syncResult]
   }
 }
 
